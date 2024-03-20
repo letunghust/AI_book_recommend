@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Recommend System </title>
+  <!-- Include the Tailwind CSS CDN link -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="bg-gray-800 py-4">
+  <div class="container mx-auto flex justify-between items-center">
+    <!-- Brand -->
+    <a href="/" class="text-white text-2xl font-bold">My Website</a>
+
+    <!-- Navigation links -->
+    <ul class="flex space-x-4">
+      <li><a href="/" class="text-white hover:text-gray-400">Home</a></li>
+      <li><a href="/recommend" class="text-white hover:text-gray-400">Recommend</a></li>
+      <li><a href="#" class="text-white hover:text-gray-400">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container mx-auto py-8">
+    <h1 class="text-3xl font-bold mb-8">Recommend Books</h1>
+  
+    <form class="flex mb-4" action="/recommend_books" method="POST">
+      <input name="user_input" type="text" placeholder="Search a book" class="w-full px-4 py-2 mr-2 rounded-l-lg focus:outline-none focus:ring focus:border-blue-300">
+      <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">Submit</button>
+    </form>
+  </div>
+  <div id="result"></div>
+  
+
+<div class="container mx-auto py-8">
+   
+    <div class="grid grid-cols-5 gap-8">
+    <!-- {% for i in range(book_name|length)  %}
+        <div class="bg-white p-4 rounded shadow">
+            <img src="{{image[i]}}" alt="Book 1" class="w-full rounded mb-4">
+            <h2 class="text-lg font-semibold">{{book_name[i]}}</h2>
+            <p class="text-gray-600">{{author[i]}}</p>
+            <h4 class="text-gray-700">Votes - {{votes[i]}}</h4>
+            <h4 class="text-gray-700">Rating - {{rating[i]}}</h4>   
+        </div>
+    {% endfor%} -->
+    {% if data %}
+        {% for i in data%}
+            <div class="bg-white p-4 rounded shadow">
+                <img src="{{i[2]}}" alt="Book 1" class="w-full rounded mb-4">
+                <h2 class="text-lg font-semibold">{{i[0]}}</h2>
+                <p class="text-gray-600">{{i[1]}}</p>
+
+            </div>
+        {% endfor %}
+    {% endif%}
+
+    </div>
+   
+</div>
+<script>
+    document.getElementById('bookForm').addEventListener('submit', function(event) {
+        event.preventDefault(); 
+
+        var userInput = document.getElementById('userInput').value;
+
+        // Gửi yêu cầu POST đến Flask
+        fetch('/recommend_books', {
+            method: 'POST',
+            body: JSON.stringify({ user_input: userInput }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.text()) 
+        .then(data => {
+            document.getElementById('result').innerText = data;
+        })
+        .catch(error => console.error('Error:', error));
+    });
+</script>
+</body>
+</html>
